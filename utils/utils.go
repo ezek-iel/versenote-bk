@@ -1,6 +1,10 @@
 package utils
 
 import (
+	"database/sql"
+	"log"
+	"regexp"
+	"strconv"
 	"strings"
 )
 
@@ -73,12 +77,21 @@ var bibleBookMap map[int]string = map[int]string{
 	66: "Revelation",
 }
 
+const bibleVerseRegexPattern string = `(\w{3,})\s(\d{1,}):(\d{1,})-?(\d{1,})?`
+
+func LogQuery(query string, args ...any) {
+	log.Printf("Executing query: %s with args: %v", query, args)
+}
+
+func CreateDatabaseConnection(filename string) (*sql.DB, error) {
+	return sql.Open("sqlite", filename)
+}
+
 func GetBibleBookName(book int) string {
 	return bibleBookMap[book]
 }
 
-type StringModifier struct {
-}
+type StringModifier struct{}
 
 func NewStringModifier() *StringModifier {
 	return &StringModifier{}
@@ -103,4 +116,49 @@ func (s *StringModifier) ConvertToPresentationFormat(book string) string {
 	}
 
 	return result.String()
+}
+
+type verseNotation struct {
+	Book       string
+	Chapter    int
+	Verse      int
+	IsRange    bool
+	StartVerse int
+	EndVerse   int
+}
+
+func ParseVerseNotation(verse string) verseNotation {
+	bibleVerseRegex := regexp.MustCompile(bibleVerseRegexPattern)
+	matches := bibleVerseRegex.FindStringSubmatch(verse)
+	log.Printf("Regex matches: %v, match length: %d", matches, len(matches))
+	return CreateVerseNotationFromStringArray(matches)
+}
+
+func CreateVerseNotationFromStringArray(verseParts []string) verseNotation {
+	book := verseParts[1]
+	chapter, _ := strconv.Atoi(verseParts[2])
+	verseNum, _ := strconv.Atoi(verseParts[3])
+
+	if len(verseParts) == 5 {
+
+		if verseParts[4] == "" {
+			return verseNotation{
+				Book:    book,
+				Chapter: chapter,
+				Verse:   verseNum,
+				IsRange: false,
+			}
+		}
+
+		startVerse, _ := strconv.Atoi(verseParts[3])
+		endVerse, _ := strconv.Atoi(verseParts[4])
+		return verseNotation{
+			Book:       book,
+			Chapter:    chapter,
+			IsRange:    true,
+			StartVerse: startVerse,
+			EndVerse:   endVerse,
+		}
+	}
+	return verseNotation{}
 }

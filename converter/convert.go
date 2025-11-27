@@ -27,9 +27,7 @@ func (v *Verse) GetBookName() string {
 	return utils.GetBibleBookName(v.Book)
 }
 
-func createDatabaseConnection(filename string) (*sql.DB, error) {
-	return sql.Open("sqlite", filename)
-}
+
 
 func getJsonDataFromFile(filename string) ([]Verse, error) {
 	verseList := []Verse{}
@@ -50,7 +48,7 @@ func getJsonDataFromFile(filename string) ([]Verse, error) {
 }
 
 func ConvertBibleJsonToDB(filename string, destination string) error {
-	db, createDatabaseConnectionError := createDatabaseConnection(destination)
+	db, createDatabaseConnectionError := utils.CreateDatabaseConnection(destination)
 
 	if createDatabaseConnectionError != nil {
 		return createDatabaseConnectionError
