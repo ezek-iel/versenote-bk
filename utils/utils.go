@@ -6,6 +6,7 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"errors"
 )
 
 var bibleBookMap map[int]string = map[int]string{
@@ -83,6 +84,8 @@ func LogQuery(query string, args ...any) {
 	log.Printf("Executing query: %s with args: %v", query, args)
 }
 
+var ErrVerseNotFound = errors.New("verse not found")
+
 func CreateDatabaseConnection(filename string) (*sql.DB, error) {
 	return sql.Open("sqlite", filename)
 }
@@ -110,7 +113,7 @@ func (s *StringModifier) ConvertToPresentationFormat(book string) string {
 	}
 
 	result := strings.Builder{}
-	for _, word := range strings.Split(bk, " ") {
+	for word := range strings.SplitSeq(bk, " ") {
 		result.WriteString(capitalize(word))
 
 	}

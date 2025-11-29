@@ -44,7 +44,6 @@ func (b *BibleDatabase) connect() error {
 	return nil
 }
 
-// TODO The major error here is database column mismatch with the Verse struct
 func (b *BibleDatabase) queryVerse(book string, chapter int, verse int) (converter.Verse, error) {
 	bibleVerseQuery := `SELECT pk, verse, text, comment FROM ` + utils.NewStringModifier().ConvertToTableNameFormat(book) + ` WHERE chapter = ? AND verse = ?;`
 
@@ -57,7 +56,7 @@ func (b *BibleDatabase) queryVerse(book string, chapter int, verse int) (convert
 	if readRowError != nil {
 
 		if errors.Is(readRowError, sql.ErrNoRows) {
-			return converter.Verse{}, errors.New("verse not found")
+			return converter.Verse{}, utils.ErrVerseNotFound
 		}
 		return converter.Verse{}, readRowError
 	}
@@ -65,6 +64,11 @@ func (b *BibleDatabase) queryVerse(book string, chapter int, verse int) (convert
 }
 
 func (b *BibleDatabase) queryVerseRange(book string, chapter int, startVerse int, endVerse int) ([]converter.Verse, error) {
+
+	if startVerse >= endVerse {
+		return []converter.Verse{{}}, utils.ErrVerseNotFound
+	}
+
 	bibleVerseQuery := `SELECT pk, verse, text, comment FROM ` + utils.NewStringModifier().ConvertToTableNameFormat(book) + ` WHERE chapter = ? AND verse BETWEEN ? AND ?;`
 	utils.LogQuery(bibleVerseQuery, chapter, startVerse, endVerse)
 	rows, queryError := b.DB.Query(bibleVerseQuery, chapter, startVerse, endVerse)
@@ -89,7 +93,7 @@ func (b *BibleDatabase) queryVerseRange(book string, chapter int, startVerse int
 	}
 
 	if rowCount == 0 {
-		return verses, errors.New("no verse found")
+		return verses, utils.ErrVerseNotFound
 	}
 	return verses, nil
 }

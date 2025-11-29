@@ -6,8 +6,9 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-	"github.com/ezek-iel/bible-notes-backend/query"
+
 	"github.com/ezek-iel/bible-notes-backend/converter"
+	"github.com/ezek-iel/bible-notes-backend/query"
 )
 
 func checkFile(filename string, ext string) bool {
@@ -22,7 +23,10 @@ func main() {
 	source := convertCommand.String("source-file", "", "the source file in JSON")
 	destination := convertCommand.String("destination-file", "", "the destination file in .db")
 
-	bibleVerseNotation := queryCommand.String("verse-notation", "", "the verse notation in the format Book Chapter:Verse or Book Chapter:StartVerse-EndVerse e.g John 1:14 or John 1:14-16")
+	bibleVerseNotation := queryCommand.String(
+		"verse-notation",
+		"",
+		"the verse notation in the format Book Chapter:Verse or Book Chapter:StartVerse-EndVerse e.g John 1:14 or John 1:14-16")
 	bibleDatabaseFileName := queryCommand.String("database-file", "", "the bible database file in .db")
 
 	if len(os.Args) < 2 {
