@@ -4,8 +4,8 @@ import (
 	"database/sql"
 	"errors"
 
-	"github.com/ezek-iel/bible-notes-backend/converter"
-	"github.com/ezek-iel/bible-notes-backend/utils"
+	"github.com/ezek-iel/versenote-bk/converter"
+	"github.com/ezek-iel/versenote-bk/utils"
 )
 
 type BibleDatabase struct {

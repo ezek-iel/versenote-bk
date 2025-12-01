@@ -7,8 +7,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/ezek-iel/bible-notes-backend/converter"
-	"github.com/ezek-iel/bible-notes-backend/query"
+	"github.com/ezek-iel/versenote-bk/converter"
+	"github.com/ezek-iel/versenote-bk/query"
 )
 
 func checkFile(filename string, ext string) bool {

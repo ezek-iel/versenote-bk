@@ -7,7 +7,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/ezek-iel/bible-notes-backend/utils"
+	"github.com/ezek-iel/versenote-bk/utils"
 	_ "modernc.org/sqlite"
 )
 

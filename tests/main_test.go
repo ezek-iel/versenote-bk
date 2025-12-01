@@ -5,9 +5,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/ezek-iel/bible-notes-backend/converter"
-	"github.com/ezek-iel/bible-notes-backend/query"
-	"github.com/ezek-iel/bible-notes-backend/utils"
+	"github.com/ezek-iel/versenote-bk/converter"
+	"github.com/ezek-iel/versenote-bk/query"
+	"github.com/ezek-iel/versenote-bk/utils"
 )
 
 func compareVerses(got, expected []converter.Verse, t testing.TB) {
