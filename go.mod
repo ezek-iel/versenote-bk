@@ -1,4 +1,4 @@
-module github.com/ezek-iel/bible-notes-backend
+module github.com/ezek-iel/versenote-bk
 
 go 1.25.0
 
