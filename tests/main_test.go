@@ -47,7 +47,7 @@ func compareVerses(got, expected []converter.Verse, t testing.TB) {
 	}
 }
 
-func TestQuerySingleBibleVerse(t *testing.T) {
+func TestQueryBibleVerse(t *testing.T) {
 	bibleDB := &query.BibleDatabase{DBPath: "test.db"}
 
 	cases := []struct {
@@ -102,4 +102,21 @@ func TestQuerySingleBibleVerse(t *testing.T) {
 			compareVerses(result, tc.result, t)
 		})
 	}
+}
+
+func TestQueryChapter(t *testing.T) {
+	bibleDb := query.BibleDatabase{DBPath: "test.db"}
+
+	expected := []converter.Verse{
+		{Chapter: 117, Verse: 1, Text: `Praise the LORD, all you nations.<br>Praise him, all you people of the earth.<br>`, Comment: ""},
+		{Chapter: 117, Verse: 2, Text: `For his unfailing love for us is powerful;<br>the LORD’s faithfulness endures forever.<br> Praise the LORD!<br>`, Comment: ""},
+	}
+	
+	got, err := bibleDb.QueryChapter("Psalms", 117)
+	
+	if err != nil {
+		t.Fatal(err)
+	}
+	
+	compareVerses(got, expected, t)
 }

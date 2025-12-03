@@ -3,6 +3,7 @@ package query
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 
 	"github.com/ezek-iel/versenote-bk/converter"
 	"github.com/ezek-iel/versenote-bk/utils"
@@ -95,5 +96,31 @@ func (b *BibleDatabase) queryVerseRange(book string, chapter int, startVerse int
 	if rowCount == 0 {
 		return verses, utils.ErrVerseNotFound
 	}
+	return verses, nil
+}
+
+func (b *BibleDatabase) QueryChapter(book string, chapter int) ([]converter.Verse, error) {
+	query := fmt.Sprintf("SELECT * from \"%s\" WHERE chapter = ?", utils.NewStringModifier().ConvertToTableNameFormat(book))
+	b.connect()
+
+	rows, queryRowError := b.DB.Query(query, chapter)
+
+	if queryRowError != nil {
+		return []converter.Verse{}, queryRowError
+	}
+
+	var verses []converter.Verse
+
+	for rows.Next() {
+		var verse converter.Verse
+		rowScanError := rows.Scan(&verse.Pk, &verse.Chapter, &verse.Verse, &verse.Text, &verse.Comment)
+
+		if rowScanError != nil {
+			continue
+		}
+
+		verses = append(verses, verse)
+	}
+
 	return verses, nil
 }

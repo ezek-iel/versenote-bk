@@ -27,8 +27,6 @@ func (v *Verse) GetBookName() string {
 	return utils.GetBibleBookName(v.Book)
 }
 
-
-
 func getJsonDataFromFile(filename string) ([]Verse, error) {
 	verseList := []Verse{}
 
